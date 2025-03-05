@@ -30,13 +30,13 @@ jobs:
         run: |
           k6 run ./k6s/load-test.js
 
-      - name: Update Helm Chart
-        env:
-          GIT_PAT: ${{ secrets.GIT_PAT }}
-        run: |
-          sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          git commit -m "Update image tag to ${{ github.sha}}" || echo "No changes"
-          git push https://x-access-token:${{ env.GIT_PAT }}@github.com/AndrewBulah/project.git
+- name: Update Helm Chart
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml
+    git config --global user.email "action@github.com"
+    git config --global user.name "GitHub Action"
+    git add .
+    git commit -m "Update image tag to ${{ github.sha}}" || echo "No changes"
+    git push origin HEAD:main
