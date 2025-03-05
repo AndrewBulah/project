@@ -6,6 +6,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Шаг установки k6
+      - name: Install k6
+        run: |
+          curl https://get.k6.io | bash
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -19,7 +24,7 @@ jobs:
 
       - name: Run Load Test
         run: |
-          k6 run ./k6s/load-test.js
+          k6 run ./k6s/load-test.js  # Проверьте путь к вашему тесту
 
       - name: Update Helm Chart
         run: |
