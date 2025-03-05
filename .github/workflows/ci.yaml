@@ -10,6 +10,9 @@ jobs:
           docker build -t andrewfreak/project:${{ github.sha }} -f app/Dockerfile .
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u andrewfreak --password-stdin
           docker push andrewfreak/project:${{ github.sha }}
+      - name: Run Load Test
+        run: |
+          k6 run ./k6s/load-test.js
       - name: Update Helm Chart
         run: |
           sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml

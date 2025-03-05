@@ -3,12 +3,19 @@ kind: Application
 metadata:
   name: drupal-app
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/slack: |
+      {
+        "format": "json",
+        "channel": "https://hooks.slack.com/services/T123456/B7890/XXXXXXXX",
+        "events": ["SyncSucceeded", "SyncFailed"]
+      }
 spec:
   project: default
   source:
     repoURL: https://github.com/AndrewBulah/project
     targetRevision: main
-    path: k8s/drupal-app  # Путь к Helm-чарту в репозитории
+    path: helm/drupal-app  # Путь к Helm-чарту в репозитории
     helm:
       valueFiles:
         - values.yaml
