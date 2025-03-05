@@ -9,6 +9,7 @@ jobs:
       - name: Setup k6
         uses: k6io/k6-action@v0.3.1
         with:
+          version: "0.39.0"
           filename: ./k6s/load-test.js
 
       - name: Login to Docker Hub
