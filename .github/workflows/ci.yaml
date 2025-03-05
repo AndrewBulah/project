@@ -19,7 +19,7 @@ jobs:
 
       - name: Run Load Test using Docker
         run: |
-          docker run --rm -v $(pwd):/src k6/k6:0.49.0 run /src/k6s/load-test.js
+          docker run --rm -v $(pwd):/src k6io/k6:0.49.0 run /src/k6s/load-test.js
 
       - name: Update Helm Chart
         run: |
