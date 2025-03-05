@@ -39,4 +39,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "Update image tag to ${{ github.sha}}" || echo "No changes"
-          git push https://x-access-token:${GIT_PAT}@github.com/AndrewBulah/project.git
+          git push https://x-access-token:${{ env.GIT_PAT }}@github.com/AndrewBulah/project.git
