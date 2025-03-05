@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drupal-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: drupal-app
+  template:
+    metadata:
+      labels:
+        app: drupal-app
+    spec:
+      containers:
+      - name: app
+        image: andrewfreak/project:{{ .Values.image.tag }}
+        ports:
+          - containerPort: 5000
+        envFrom:
+          - secretRef:
+              name: drupal-secrets
