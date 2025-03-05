@@ -4,6 +4,8 @@ import os
 
 app = Flask(__name__)
 
+print("TEST CHANGE")
+
 # Конфигурация БД (будет заменена через Kubernetes Secrets)
 db_config = {
     "host": os.getenv("DB_HOST", "node2"),  # Из переменных окружения
