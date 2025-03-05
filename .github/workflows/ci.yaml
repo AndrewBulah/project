@@ -6,10 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install k6
-        run: |
-          curl https://get.k6.io | bash
-          echo 'export PATH=$PATH:~/_k6' >> $GITHUB_ENV  # Добавляем путь к k6 в PATH
+      - name: Setup k6
+        uses: loadimpact/k6-action@v2
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -24,7 +22,7 @@ jobs:
 
       - name: Run Load Test
         run: |
-          k6 run ./k6s/load-test.js  # Убедитесь, что файл существует
+          k6 run ./k6s/load-test.js
 
       - name: Update Helm Chart
         run: |
