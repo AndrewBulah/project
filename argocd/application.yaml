@@ -7,7 +7,7 @@ metadata:
     notifications.argoproj.io/slack: |
       {
         "format": "json",
-        "channel": "https://hooks.slack.com/services/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",
+        "channel": "${{ secrets.SLACK_WEBHOOK_URL }}",
         "events": ["SyncSucceeded", "SyncFailed"]
       }
 spec:
