@@ -37,6 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Используем GitHub SHA как тег
           sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
