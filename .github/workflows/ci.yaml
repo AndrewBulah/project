@@ -14,6 +14,16 @@ jobs:
           echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
           sudo apt-get update && sudo apt-get install -y k6
 
+      # Увеличение версии
+      - name: Bump Version
+        uses: jordiprats/github-action-bump-version@v1.0.0
+        with:
+          version_file_path: "helm/drupal-app/values.yaml"
+          version_regex: "(tag: )v\\d+\\.\\d+\\.\\d+"
+          new_version: "patch"  # Увеличение patch-версии
+          commit: true
+          commit_message: "Bump version to v${{ steps.bump.outputs.new_version }}"
+
       # Логин в Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -24,8 +34,8 @@ jobs:
       # Сборка и пуш Docker-образа
       - name: Build and Push Docker Image
         run: |
-          docker build -t andrewfreak/project:${{ github.sha }} -f app/Dockerfile ./app
-          docker push andrewfreak/project:${{ github.sha }}
+          docker build -t andrewfreak/project:${{ steps.bump.outputs.new_version }} -f app/Dockerfile ./app
+          docker push andrewfreak/project:${{ steps.bump.outputs.new_version }}
 
       # Запуск нагрузочного теста
       - name: Run Load Test
@@ -33,36 +43,23 @@ jobs:
           k6 run ./k6s/load-test.js
 
       # Обновление Helm-чарта в Git
-      - name: Update Helm Chart Tag
+      - name: Push Version Update to Git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Используем GitHub SHA как тег
-          sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:main
 
       # Уведомления в Slack
       - name: Send Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "✅ Деплой завершен! Тег: ${{ github.sha }}",
-              "channel": "C08G071M6AD"
-            }
-          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"text\": \"✅ Деплой завершен! Тег: ${{ steps.bump.outputs.new_version }}\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Send Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "❌ Ошибка деплоя! Тег: ${{ github.sha }}",
-              "channel": "C08G071M6AD"
-            }
-          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"text\": \"❌ Ошибка деплоя! Тег: ${{ steps.bump.outputs.new_version }}\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
