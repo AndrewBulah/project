@@ -49,13 +49,13 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.25.0
         with:
-          channel: '#C08G071M6AD'
-          text: "✅ Деплой завершен!"
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack-message: "✅ Деплой завершен!"
+          channel-id: "#C08G071M6AD"
       - name: Send Slack Notification on Failure
         if: failure()
         uses: slackapi/slack-github-action@v1.25.0
         with:
-          channel: '#C08G071M6AD'
-          text: "❌ Ошибка деплоя!"
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack-message: "❌ Ошибка деплоя!"
+          channel-id: "#C08G071M6AD"
