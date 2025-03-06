@@ -1,5 +1,5 @@
 # Drupal-like CMS на Python
-```bash
+```mermaid
 graph TD
     A[GitHub] --> B{CI/CD Pipeline}
     B --> C[Build Docker Image]
