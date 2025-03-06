@@ -33,16 +33,16 @@ jobs:
           k6 run ./k6s/load-test.js
 
       # Обновление Helm-чарта в Git
-      - name: Update Helm Chart
+      - name: Update Helm Chart Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Получаем новую версию из действия Bump Version
-          sed -i "s/tag:.*/tag: ${{ steps.bump.outputs.new_version }}/" helm/drupal-app/values.yaml
+          # Используем GitHub SHA как тег
+          sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add .
-          git commit -m "Update image tag to ${{ steps.bump.outputs.new_version }}" || echo "No changes"
+          git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
 
       # Уведомления в Slack
@@ -50,7 +50,7 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.25.0
         with:
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhookUrl: ${{ secrets.SLACK_WEBHOOK_URL }}  # camelCase!
           slack-message: "✅ Деплой завершен! Тег: ${{ github.sha }}"
           channel-id: "C08G071M6AD"
 
@@ -58,6 +58,6 @@ jobs:
         if: failure()
         uses: slackapi/slack-github-action@v1.25.0
         with:
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhookUrl: ${{ secrets.SLACK_WEBHOOK_URL }}
           slack-message: "❌ Ошибка деплоя!"
           channel-id: "C08G071M6AD"
