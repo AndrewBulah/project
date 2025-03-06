@@ -50,32 +50,12 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}  # Исправленный параметр
-          blocks: |
-            [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "✅ Деплой завершен!\nТег: ${{ github.sha }}"
-                }
-              }
-            ]
-          channel: C08G071M6AD  # Используйте channel вместо channel-id
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          text: "✅ Деплой завершен! Тег: ${{ github.sha }}"
 
       - name: Send Slack Notification on Failure
         if: failure()
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          blocks: |
-            [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "❌ Ошибка деплоя!"
-                }
-              }
-            ]
-          channel: C08G071M6AD
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          text: "❌ Ошибка деплоя!"
