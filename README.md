@@ -1,1 +1,2 @@
-# project
+# Drupal-like CMS на Python
+
