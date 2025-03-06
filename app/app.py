@@ -46,5 +46,17 @@ def add_user():
 def version():
     return f"Текущая версия приложения: {APP_VERSION}"  # Возвращает версию из переменной окружения <button class="citation-flag" data-index="3">
 
+
+@app.route('/delete/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        conn.commit()
+        return redirect(url_for('index'))
+    except Exception as e:
+        return f"Ошибка при удалении: {str(e)}", 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
