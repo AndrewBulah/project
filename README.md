@@ -1,5 +1,5 @@
 # Drupal-like CMS на Python
-
+```bash
 ┌───────────────┐       ┌──────────────┐       ┌──────────────┐
 │   GitHub      │       │   Docker Hub  │       │  Kubernetes   │
 │  Repository   │──────▶│    Registry   │──────▶│    Cluster    │
@@ -23,3 +23,4 @@
                                              │ (StatefulSet) │
                                              └──────────────┘
                                           
+```
