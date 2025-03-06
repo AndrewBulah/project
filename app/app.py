@@ -37,6 +37,10 @@ def add_user():
         except Exception as e:
             return f"Ошибка при добавлении: {str(e)}", 500
     return render_template('add.html')
+# 2.0.4
+@app.route('/version')
+def version():
+    return f"Current version: {os.getenv('APP_VERSION', 'unknown')}"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
