@@ -4,13 +4,17 @@ import os
 
 app = Flask(__name__)
 
+# Конфигурация БД (используются переменные окружения из Kubernetes Secrets)
 db_config = {
-    "host": os.getenv("DB_HOST", "192.168.56.101"),
+    "host": os.getenv("DB_HOST", "mariadb-service.default.svc.cluster.local"),  # Используйте DNS-имя сервиса MariaDB в кластере <button class="citation-flag" data-index="1">
     "user": os.getenv("DB_USER", "drupal_user"),
     "password": os.getenv("DB_PASSWORD", "drupal_pass"),
     "database": os.getenv("DB_NAME", "drupal_db"),
     "port": 3306
 }
+
+# Переменная версии приложения (устанавливается через Helm)
+APP_VERSION = os.getenv("APP_VERSION", "unknown")  # Добавлена переменная <button class="citation-flag" data-index="3">
 
 @app.route('/')
 def index():
@@ -21,7 +25,7 @@ def index():
         users = cursor.fetchall()
         return render_template('index.html', users=users)
     except Exception as e:
-        return f"Ошибка: {str(e)}", 500
+        return f"Ошибка доступа к БД: {str(e)}", 500
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
@@ -35,12 +39,12 @@ def add_user():
             conn.commit()
             return redirect(url_for('index'))
         except Exception as e:
-            return f"Ошибка при добавлении: {str(e)}", 500
+            return f"Ошибка добавления пользователя: {str(e)}", 500
     return render_template('add.html')
-# 2.0.4
+#2.0.5
 @app.route('/version')
 def version():
-    return f"Current version: {os.getenv('APP_VERSION', 'unknown')}"
+    return f"Текущая версия приложения: {APP_VERSION}"  # Возвращает версию из переменной окружения <button class="citation-flag" data-index="3">
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
