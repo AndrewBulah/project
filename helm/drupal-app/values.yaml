@@ -3,11 +3,7 @@ app:
   name: drupal-app
   replicas: 2
   image: andrewfreak/project
-<<<<<<< HEAD
-  tag: df34c8df655e13fcc42a82585a9529b4fd5ed6c8
-=======
-  tag: df34c8df655e13fcc42a82585a9529b4fd5ed6c8
->>>>>>> 8f1c7725dec0ed332a246bb873064e9e500a446d
+  tag: 2.0.0
   port: 5000
 
 # Настройки Service
