@@ -6,37 +6,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Установка k6
       - name: Install k6
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ca-certificates gnupg2
+          sudo apt-get update && sudo apt-get install -y ca-certificates gnupg2
           sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
           echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install -y k6
+          sudo apt-get update && sudo apt-get install -y k6
 
+      # Логин в Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Сборка и пуш Docker-образа
       - name: Build and Push Docker Image
         run: |
           docker build -t andrewfreak/project:${{ github.sha }} -f app/Dockerfile ./app
           docker push andrewfreak/project:${{ github.sha }}
 
+      # Запуск нагрузочного теста
       - name: Run Load Test
         run: |
           k6 run ./k6s/load-test.js
 
-      - name: Update Helm Chart  # Этот шаг должен быть внутри списка steps задачи build
+      # Обновление Helm-чарта
+      - name: Update Helm Chart
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_PAT: ${{ secrets.GIT_PAT }}
         run: |
+          # Обновляем тег образа в values.yaml
           sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/drupal-app/values.yaml
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "Update image tag to ${{ github.sha}}" || echo "No changes"
-          git push origin HEAD:main
+          git push https://x-access-token:${GIT_PAT}@github.com/AndrewBulah/project.git

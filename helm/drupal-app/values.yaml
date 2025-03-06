@@ -3,7 +3,7 @@ app:
   name: drupal-app
   replicas: 2
   image: andrewfreak/project
-  tag: 1.0.0
+  tag: 2.0.0
   port: 5000
 
 # Настройки Service
@@ -26,4 +26,4 @@ database:
   password: drupal_pass
 
 serviceAccount:
-  create: false  # Отключаем создание ServiceAccount
+  create: true  # Отключаем создание ServiceAccount

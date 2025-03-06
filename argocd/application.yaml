@@ -7,7 +7,7 @@ metadata:
     notifications.argoproj.io/slack: |
       {
         "format": "json",
-        "channel": "${{ secrets.SLACK_WEBHOOK_URL }}",
+        "channel": "https://hooks.slack.com/services/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",
         "events": ["SyncSucceeded", "SyncFailed"]
       }
 spec:
@@ -15,7 +15,7 @@ spec:
   source:
     repoURL: https://github.com/AndrewBulah/project
     targetRevision: main
-    path: helm/drupal-app  # Путь к Helm-чарту в репозитории
+    path: helm/drupal-app  # Путь к Helm-чарту
     helm:
       valueFiles:
         - values.yaml

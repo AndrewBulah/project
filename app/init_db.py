@@ -2,9 +2,9 @@ import mysql.connector
 
 def init_database():
     conn = mysql.connector.connect(
-        host="node2",
-        user="root",          # Учетные данные из MariaDB
-        password="1"  # Замените на реальный пароль!
+        host="192.168.56.101",
+        user="root",
+        password="1"
     )
     cursor = conn.cursor()
     # Создание БД и пользователя
