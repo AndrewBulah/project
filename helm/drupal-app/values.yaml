@@ -3,7 +3,7 @@ app:
   name: drupal-app
   replicas: 2
   image: andrewfreak/project
-  tag: "v2.0.13"
+  tag: "v2.0.14"
   port: 5000
 
 # Настройки Service
